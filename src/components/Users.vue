@@ -46,7 +46,7 @@ onMounted(async () => {
         {{ album.title }}
       </div>
     </div>
-    <h2 v-else-if="isError">Something weny wrong or no data!</h2>
+    <h2 v-else-if="isError">Something went wrong or no data!</h2>
     <div v-else-if="!albums.length && !isError" class="loader"></div>
   </div>
 </template>
