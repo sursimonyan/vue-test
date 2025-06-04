@@ -11,14 +11,14 @@ interface IAlbums {
 
 const url = 'https://jsonplaceholder.typicode.com/albums';
 
-const albums = ref<IAlbums[]>([]);
+let albums = ref<IAlbums[]>([]);
 const isError = ref<boolean>(false);
 const idFilter = ref<userId>(1);
 
 const sortedAlbums = computed(() => {
   if (albums.value.length) {
-    const newAlbums = albums.value.filter((item) => item.userId === idFilter.value);
-    return newAlbums.sort((a, b) => a.userId > b.userId);
+    albums = albums.value.filter((item) => item.userId === idFilter.value);
+    return albums.sort((a, b) => a.userId > b.userId);
   }
 })
 
@@ -41,7 +41,6 @@ onMounted(async () => {
 
 <template>
   <div class="main">
-    {{ isError }}
     <div v-if="!!albums.length" class="data">
       <div v-for="album in sortedAlbums" :key="album.id">
         {{ album.title }}
