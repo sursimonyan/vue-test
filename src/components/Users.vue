@@ -13,24 +13,29 @@ const url = 'https://jsonplaceholder.typicode.com/albums';
 
 let albums = ref<IAlbums[]>([]);
 const isError = ref<boolean>(false);
+const isLoading = ref<boolean>(true);
 const idFilter = ref<userId>(1);
 
 const sortedAlbums = computed(() => {
   if (albums.value.length) {
-    albums = albums.value.filter((item) => item.userId === idFilter.value);
-    return albums.sort((a, b) => a.userId > b.userId);
+    return albums.value
+      .filter((item) => item.userId === idFilter.value)
+      .slice()
+      .sort((a, b) => a.userId - b.userId);
   }
 })
 
-async function getAlbums(url) {
+async function getAlbums(url: string) {
   try {
     const response = await fetch(url);
     if (!response.ok) throw Error(response.statusText)
     const data = await response.json();
     albums.value = data;
+    isLoading.value = false;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     isError.value = true;
+    isLoading.value = false;
   }
 }
 
@@ -46,8 +51,9 @@ onMounted(async () => {
         {{ album.title }}
       </div>
     </div>
-    <h2 v-else-if="isError">Something went wrong or no data!</h2>
-    <div v-else-if="!albums.length && !isError" class="loader"></div>
+    <h2 v-else-if="isError">Something went wrong!</h2>
+    <h2 v-else-if="!isLoading && !albums.length">There is no data!</h2>
+    <div v-else-if="isLoading" class="loader"></div>
   </div>
 </template>
 
